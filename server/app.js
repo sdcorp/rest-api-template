@@ -1,6 +1,8 @@
 const express = require('express');
 const path = require('path');
 const bodyParser = require('body-parser');
+const swaggerUi = require('swagger-ui-express');
+const swaggerDocument = require('./swagger.json');
 const errorHandlers = require('./helpers/errorHandlers');
 const testRoutes = require('./routes/testRoutes');
 
@@ -14,8 +16,11 @@ app.use(express.static(path.resolve(__dirname, '../client/build')));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
+// Add Swagger
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 // After allllll that above middleware, we finally handle our own routes!
-app.use('/api', testRoutes);
+app.use('/api/v1', testRoutes);
 
 // If that above routes didnt work, we 404 them and forward to error handler
 app.use(errorHandlers.notFound);
